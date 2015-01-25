@@ -11,27 +11,61 @@ namespace WhatWiiDo
 {
     public class SodaGame : Minigame
     {
-        static int shakesNeeded = 20;
-        int shakes = 0;
-        bool lastShakeUp = true;
-        bool bPressed = false;
+
+        Dictionary<Guid, sodaCan> sodas;
 
         ISoundEngine soundEngine;
 
-        int endingMilis = 2000;
-
-        public SodaGame()
+        public SodaGame(Dictionary<Guid, Wiimote> players)
         {
             soundEngine = new ISoundEngine();
+
+            sodas = new Dictionary<Guid, sodaCan>();
+            foreach (Guid id in players.Keys)
+            {
+                sodas.Add(id, new sodaCan());
+            }
         }
 
         public void update(Dictionary<Guid, Wiimote> players, int deltaTime)
         {
-            foreach (Wiimote mote in players.Values)
+            foreach (Guid id in players.Keys)
+            {
+                sodas[id].update(players[id], deltaTime, soundEngine);
+            }
+        }
+
+        public bool isOver()
+        {
+            bool allDone = true;
+            foreach (sodaCan s in sodas.Values)
+            {
+                if (s.finishedMilis > 0)
+                {
+                    allDone = false;
+                }
+            }
+            return allDone;
+        }
+
+        private class sodaCan
+        {
+            public int shakes = 0;
+            public int finishedMilis = 4000;
+            bool lastShakeUp = false;
+            bool bPressed = false;
+
+            static int shakesNeeded = 20;
+
+            public sodaCan()
+            {
+            }
+
+            public void update(Wiimote mote, int deltaTime, ISoundEngine soundEngine)
             {
                 if (shakes == -1)
                 {
-                    endingMilis -= deltaTime;
+                    finishedMilis -= deltaTime;
                 }
                 else
                 {
@@ -68,12 +102,6 @@ namespace WhatWiiDo
                     }
                 }
             }
-        }
-
-        public bool isOver()
-        {
-            //return false;
-            return endingMilis <= 0;
         }
     }
 }

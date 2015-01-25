@@ -7,7 +7,7 @@ using WiimoteLib;
 
 namespace WhatWiiDo
 {
-    interface Minigame
+    interface Minigame 
     {
         void update(Dictionary<Guid, Wiimote> players, int deltaTime);
 
