@@ -28,12 +28,13 @@ namespace WhatWiiDo
             currentGame = gameList[0];
 
             float frameMilis = 1000f / FPS;
+            int elapsedMilis = 1;
 
             while (running)
             {
                 DateTime last = DateTime.Now;
 
-                currentGame.update(players);
+                currentGame.update(players, elapsedMilis);
                 if (currentGame.isOver())
                 {
                     gameList.Remove(currentGame);
@@ -48,7 +49,7 @@ namespace WhatWiiDo
                 }
 
                 TimeSpan elapsed = DateTime.Now - last;
-               System.Threading.Thread.Sleep((int) (frameMilis - elapsed.Milliseconds));
+                elapsedMilis = elapsed.Milliseconds;
             }
 
             Console.ReadLine();
