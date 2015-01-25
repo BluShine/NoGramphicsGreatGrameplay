@@ -4,17 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WiimoteLib;
+using System.Media;
 
 namespace WhatWiiDo
 {
     public class SodaGame : Minigame
     {
-        static int shakesNeeded = 50;
+        static int shakesNeeded = 10;
         int shakes = 0;
         bool lastShakeUp = true;
 
+        SoundPlayer shakeSound;
+        SoundPlayer openSound;
+        SoundPlayer fizzSound;
+
         public SodaGame()
         {
+            shakeSound = new SoundPlayer(Properties.Resources.soda_shake);
+            openSound = new SoundPlayer(Properties.Resources.soda_open_full);
+            fizzSound = new SoundPlayer(Properties.Resources.soda_fizz_short);
         }
 
         public void update(Dictionary<Guid, Wiimote> players)
@@ -23,16 +31,8 @@ namespace WhatWiiDo
             {
                 if (mote.WiimoteState.AccelState.Values.Y < -2 && !lastShakeUp)
                 {
-                    Console.WriteLine();
-                    int i = shakes;
-                    while (i > 0)
-                    {
-                        Console.Write(" ");
-                        i--;
-                    }
-                    Console.Write("fap");
-                    lastShakeUp = true;
                     shakes++;
+                    shakeSound.Play();
                 }
                 if (mote.WiimoteState.AccelState.Values.Y > 2 && lastShakeUp)
                 {
@@ -45,8 +45,6 @@ namespace WhatWiiDo
         {
             if (shakes > shakesNeeded)
             {
-                Console.WriteLine();
-                Console.WriteLine();
                 Console.WriteLine("you win!");
                 return true;
             }

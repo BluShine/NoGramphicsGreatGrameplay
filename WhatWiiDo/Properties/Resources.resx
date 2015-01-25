@@ -117,4 +117,50 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="soda_drop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\sounds\soda\soda_drop.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="soda_fizz_long" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\sounds\soda\soda_fizz_long.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="soda_fizz_short" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\sounds\soda\soda_fizz_short.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="soda_hit_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\sounds\soda\soda_hit_1.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="soda_hit_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\sounds\soda\soda_hit_2.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="soda_hit_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\sounds\soda\soda_hit_3.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="soda_hit_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\sounds\soda\soda_hit_4.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="soda_open_full" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\sounds\soda\soda_open_full.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="soda_open_hiss_only" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\sounds\soda\soda_open_hiss_only.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="soda_open_pop_only" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\sounds\soda\soda_open_pop_only.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="soda_open_short" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\sounds\soda\soda_open_short.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="soda_pour_full" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\sounds\soda\soda_pour_full.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="soda_shake" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\sounds\soda\soda_shake.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="soda_tab_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\sounds\soda\soda_tab_1.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="soda_tab_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\sounds\soda\soda_tab_2.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>
