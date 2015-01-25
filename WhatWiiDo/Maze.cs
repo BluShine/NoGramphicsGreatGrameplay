@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using WhatWiiDo;
 using WiimoteLib;
 using System.Media;
+using IrrKlang;
 
 
 public class Maze : Minigame
@@ -11,6 +12,9 @@ public class Maze : Minigame
 	int mazeSize;
 	MazeRoom[,] rooms;
     Dictionary<Guid, Player> players;
+    bool winFlag;
+
+    ISoundEngine soundEngine;
 
     static float[] spawnLocations = { 0, 0, 1, 1, 0, 1, 1, 0, .5f, .5f, 0, .5f, .5f, 0, 1, .5f, .5f, 1 };
 
@@ -20,6 +24,8 @@ public class Maze : Minigame
 		mazeSize = numPlayers + 2;
 		rooms = new MazeRoom[mazeSize, mazeSize];
         players = new Dictionary<Guid, Player>(numPlayers);
+        winFlag = false;
+        soundEngine = new ISoundEngine();
         int i = 0;
         foreach(Guid ident in input.Keys)
         {
@@ -27,7 +33,7 @@ public class Maze : Minigame
             i += 2;
         }
         buildMaze();
-        //printMaze();
+        printMaze();
 	}
 
 	void buildMaze() {
@@ -120,14 +126,7 @@ public class Maze : Minigame
 
     void printMaze()
     {
-        List<Point> playerLocs = new List<Point>(players.Count);
-        foreach(Player p in players.Values)
-        {
-            Point pl = new Point();
-            pl.X = p.x;
-            pl.Y = p.y;
-            playerLocs.Add(pl);
-        }
+        List<Point> playerLocs = getPlayerLocations();
 
         Console.Write("║");
         for(int i = 0; i < rooms.GetLength(0); i++)
@@ -171,99 +170,177 @@ public class Maze : Minigame
 
     public void update(Dictionary<Guid, Wiimote> input, int deltaTime)
     {
+        List<Point> playerLocs = getPlayerLocations();
+
         foreach (Guid ident in input.Keys)
         {
             Player currPlayer = players[ident];
-            currPlayer.deltaT(1);
+            currPlayer.deltaT(deltaTime);
             if(currPlayer.down()) continue;
+            Point currPlayerLoc = currPlayer.getLocation();
             Wiimote mote = input[ident];
+            mote.SetRumble(false);
             bool[] moveDirs = new bool[4];
             for(int i = 0; i < 4; i++)
             {
                 moveDirs[i] = !blockedMoveDir(currPlayer.x, currPlayer.y, i);
             }
+            bool tapped = false;
+            bool wallHit = false;
+            int hiFives = 0;
+
             if (mote.WiimoteState.AccelState.Values.X > 2)
             {
                 if(!moveDirs[2])
                 {
                     Console.WriteLine("Left Movement Blocked");
+                    wallHit = true;
                 }
-                currPlayer.setDownTime(30);
+                tapped = true;
             }
             else if (mote.WiimoteState.AccelState.Values.X < -2)
             {
                 if (!moveDirs[0])
                 {
                     Console.WriteLine("Right Movement Blocked");
+                    wallHit = true;
                 }
-                currPlayer.setDownTime(30);
+                tapped = true;
             }
             else if (mote.WiimoteState.AccelState.Values.Z > 2)
             {
                 if (!moveDirs[1])
                 {
                     Console.WriteLine("Backward Movement Blocked");
+                    wallHit = true;
                 }
-                currPlayer.setDownTime(30);
+                tapped = true;
             }
             else if (mote.WiimoteState.AccelState.Values.Z < -2)
             {
-                if (!moveDirs[3])
+                int whoElseIsHere = occupiedCount(playerLocs, currPlayerLoc);
+                if(whoElseIsHere > 1)
+                {
+                    hiFives = whoElseIsHere - 1;
+                }
+                else if (!moveDirs[3])
                 {
                     Console.WriteLine("Forward Movement Blocked");
+                    wallHit = true;
                 }
-                currPlayer.setDownTime(30);
+                tapped = true;
             }
+            if(tapped)
+            {
+                currPlayer.setDownTime(200);
+                if (wallHit)
+                {
+                    mote.SetRumble(true);
+                    soundEngine.Play2D("../../sounds/maze/knock_notebook.wav");
+                    foreach(Guid odent in input.Keys)
+                    {
+                        Point loc = players[odent].getLocation();
+                        if(Math.Abs(loc.X - currPlayerLoc.X) == 1 || Math.Abs(loc.Y - currPlayerLoc.Y) == 1)
+                        {
+                            input[odent].SetRumble(true);
+                            players[odent].setDownTime(100);
+                        }
+                    }
+                }
+                else if(hiFives > 0)
+                {
+                    if (hiFives == numPlayers - 1)
+                    {
+                        soundEngine.Play2D("../../sounds/maze/enthusiastic_yes.wav");
+                        winFlag = true;
+                    }
+                    while(hiFives > 0)
+                    {
+                        hiFives--;
+                        if(hiFives > 0)
+                            soundEngine.Play2D("../../sounds/maze/slap_2.wav");
+                        else
+                            soundEngine.Play2D("../../sounds/maze/slap_1.wav");
+                        //System.Threading.Thread.Sleep(100);
+                    }
+                }
+                else
+                {
+                    soundEngine.Play2D("../../sounds/maze/pong_whoosh.wav").Volume = .4f;
+                }
+            }
+
             bool moved = false;
+            bool smack = false;
             if(mote.WiimoteState.ButtonState.Right)
             {
                 if(moveDirs[0])
+                {
                     currPlayer.x += 1;
+                    moved = true;
+                }
                 else
-                    Console.WriteLine("Ow!");
-                moved = true;
+                {
+                    smack = true;
+                }
             }
             else if(mote.WiimoteState.ButtonState.Up)
             {
-                if(moveDirs[3])
+                if (moveDirs[3])
+                {
                     currPlayer.y -= 1;
+                    moved = true;
+                }
                 else
-                    Console.WriteLine("Ow!");
-                moved = true;
+                {
+                    smack = true;
+                }
             }
             else if(mote.WiimoteState.ButtonState.Left)
             {
-                if(moveDirs[2])
+                if (moveDirs[2])
+                {
                     currPlayer.x -= 1;
+                    moved = true;
+                }
                 else
-                    Console.WriteLine("Ow!");
-                moved = true;
+                {
+                    smack = true;
+                }
             }
             else if(mote.WiimoteState.ButtonState.Down)
             {
-                if(moveDirs[1])
+                if (moveDirs[1])
+                {
                     currPlayer.y += 1;
+                    moved = true;
+                }
                 else
-                    Console.WriteLine("Ow!");
-                moved = true;
+                {
+                    smack = true;
+                }
             }
 
             if(moved)
             {
-                currPlayer.setDownTime(30);
+                currPlayer.setDownTime(200);
                 printMaze();
+            }
+            else if(smack)
+            {
+                Console.WriteLine("Ow!");
+                soundEngine.Play2D("../../sounds/maze/knock_table.wav");
+                currPlayer.setDownTime(700);
+                mote.SetRumble(true);
             }
         }
     }
 
     public bool isOver()
     {
-        if(playerConvergence())
-        {
+        if (winFlag)
             Console.WriteLine("You Win!");
-            return true;
-        }
-        return false;
+        return winFlag;
     }
 
     bool blockedMoveDir(int x, int y, int dir)
@@ -282,27 +359,26 @@ public class Maze : Minigame
         return true;
     }
 
-    bool playerConvergence()
+    List<Point> getPlayerLocations()
     {
-        bool res = true;
-        int allx = -1;
-        int ally = -1;
-        foreach(Player p in players.Values)
+        List<Point> locs = new List<Point>(players.Count);
+        foreach (Player p in players.Values)
         {
-            if (allx < 0)
-            {
-                allx = p.x;
-                ally = p.y;
-            }
-            else
-            {
-                res &= p.x == allx;
-                res &= p.y == ally;
-            }
+            locs.Add(p.getLocation());
         }
-        return res;
+        return locs;
     }
 
+    int occupiedCount(List<Point> locs, Point target)
+    {
+        int count = 0;
+        foreach(Point loc in locs)
+        {
+            if(loc.Equals(target))
+                count++;
+        }
+        return count;
+    }
 }
 
 public class MazeRoom
@@ -344,7 +420,7 @@ public class Player
     Guid attachedInput;
     public int x;
     public int y;
-    int facing;
+    //int facing;
     int downTime;
 
     public Player(Guid aI, int ix, int iy)
@@ -352,7 +428,7 @@ public class Player
         attachedInput = aI;
         x = ix;
         y = iy;
-        facing = 3;
+        //facing = 3;
         downTime = 0;
     }
 
@@ -369,5 +445,13 @@ public class Player
     public void deltaT(int dt)
     {
         downTime -= dt;
+    }
+
+    public Point getLocation()
+    {
+        Point p = new Point();
+        p.X = x;
+        p.Y = y;
+        return p;
     }
 }

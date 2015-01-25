@@ -22,7 +22,7 @@ namespace WhatWiiDo
             Load();
 
             List<Minigame> gameList = new List<Minigame>();
-            gameList.Add(new SodaGame(players));
+            //gameList.Add(new SodaGame(players));
             gameList.Add(new Maze(players));
 
             currentGame = gameList[0];
