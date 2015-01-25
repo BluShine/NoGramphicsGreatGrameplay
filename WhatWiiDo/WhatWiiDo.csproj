@@ -67,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="buttonHandler.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="Maze.cs" />
     <Compile Include="Minigame.cs" />

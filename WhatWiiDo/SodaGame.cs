@@ -50,15 +50,25 @@ namespace WhatWiiDo
 
         private class sodaCan
         {
+            Random random;
+            buttonHandler buttons;
             public int shakes = 0;
             public int finishedMilis = 4000;
             bool lastShakeUp = false;
-            bool bPressed = false;
 
             static int shakesNeeded = 20;
+            static String[] canSounds = { 
+                                            "../../sounds/soda/soda_hit_1.wav",
+                                            "../../sounds/soda/soda_hit_2.wav",
+                                            "../../sounds/soda/soda_hit_3.wav",
+                                            "../../sounds/soda/soda_hit_4.wav",
+                                            "../../sounds/soda/soda_tab_1.wav",
+                                            "../../sounds/soda/soda_tab_2.wav"};
 
             public sodaCan()
             {
+                buttons = new buttonHandler();
+                random = new Random();
             }
 
             public void update(Wiimote mote, int deltaTime, ISoundEngine soundEngine)
@@ -69,6 +79,8 @@ namespace WhatWiiDo
                 }
                 else
                 {
+                    List<List<wiiButton>> buttonList = buttons.update(mote);
+
                     if (mote.WiimoteState.AccelState.Values.Y < -2 && !lastShakeUp)
                     {
                         shakes++;
@@ -81,9 +93,9 @@ namespace WhatWiiDo
                         lastShakeUp = false;
                     }
 
-                    if (mote.WiimoteState.ButtonState.B && !bPressed)
+                    if (buttonList[0].Contains(wiiButton.B))
                     {
-                        bPressed = true;
+                        buttonList[0].Remove(wiiButton.B);
                         if (shakes > shakesNeeded)
                         {
                             soundEngine.Play2D("../../sounds/soda/soda_fizz_short.wav");
@@ -96,9 +108,10 @@ namespace WhatWiiDo
                             shakes = 0;
                         }
                     }
-                    if (!mote.WiimoteState.ButtonState.B)
+
+                    if (buttonList[0].Count > 0)
                     {
-                        bPressed = false;
+                        soundEngine.Play2D(canSounds[random.Next(canSounds.Length)]);
                     }
                 }
             }
