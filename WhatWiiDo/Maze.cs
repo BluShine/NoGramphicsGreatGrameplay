@@ -27,8 +27,7 @@ public class Maze : Minigame
             i += 2;
         }
         buildMaze();
-        printMaze();
-        Console.ReadLine();
+        //printMaze();
 	}
 
 	void buildMaze() {
@@ -154,7 +153,7 @@ public class Maze : Minigame
         }
     }
 
-    public void update(Dictionary<Guid, Wiimote> input)
+    public void update(Dictionary<Guid, Wiimote> input, int deltaTime)
     {
         foreach (Guid ident in input.Keys)
         {

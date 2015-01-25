@@ -18,6 +18,8 @@ namespace WhatWiiDo
 
         ISoundEngine soundEngine;
 
+        int endingMilis = 2000;
+
         public SodaGame()
         {
             soundEngine = new ISoundEngine();
@@ -27,42 +29,51 @@ namespace WhatWiiDo
         {
             foreach (Wiimote mote in players.Values)
             {
-                if (mote.WiimoteState.AccelState.Values.Y < -2 && !lastShakeUp)
+                if (shakes == -1)
                 {
-                    shakes++;
-                    float shakeSpeed = 1f + 2f * (((float) Math.Min(shakes, shakesNeeded)) / ((float) shakesNeeded));
-                    soundEngine.Play2D("../../sounds/soda/soda_shake_2.wav").PlaybackSpeed = shakeSpeed;
-                    lastShakeUp = true;
+                    endingMilis -= deltaTime;
                 }
-                if (mote.WiimoteState.AccelState.Values.Y > 2 && lastShakeUp)
+                else
                 {
-                    lastShakeUp = false;
-                }
+                    if (mote.WiimoteState.AccelState.Values.Y < -2 && !lastShakeUp)
+                    {
+                        shakes++;
+                        float shakeSpeed = 1f + 2f * (((float)Math.Min(shakes, shakesNeeded)) / ((float)shakesNeeded));
+                        soundEngine.Play2D("../../sounds/soda/soda_shake_2.wav").PlaybackSpeed = shakeSpeed;
+                        lastShakeUp = true;
+                    }
+                    if (mote.WiimoteState.AccelState.Values.Y > 2 && lastShakeUp)
+                    {
+                        lastShakeUp = false;
+                    }
 
-                if (mote.WiimoteState.ButtonState.B && !bPressed)
-                {
-                    bPressed = true;
-                    if (shakes > shakesNeeded)
+                    if (mote.WiimoteState.ButtonState.B && !bPressed)
                     {
-                        soundEngine.Play2D("../../sounds/soda/soda_fizz_short.wav");
-                        soundEngine.Play2D("../../sounds/soda/soda_open_hiss_only.wav");
+                        bPressed = true;
+                        if (shakes > shakesNeeded)
+                        {
+                            soundEngine.Play2D("../../sounds/soda/soda_fizz_short.wav");
+                            soundEngine.Play2D("../../sounds/soda/soda_open_hiss_only.wav");
+                            shakes = -1;
+                        }
+                        else
+                        {
+                            soundEngine.Play2D("../../sounds/soda/soda_open_full.wav");
+                            shakes = 0;
+                        }
                     }
-                    else
+                    if (!mote.WiimoteState.ButtonState.B)
                     {
-                        soundEngine.Play2D("../../sounds/soda/soda_open_full.wav");
+                        bPressed = false;
                     }
-                    shakes = 0;
-                }
-                if (!mote.WiimoteState.ButtonState.B)
-                {
-                    bPressed = false;
                 }
             }
         }
 
         public bool isOver()
         {
-            return false;
+            //return false;
+            return endingMilis <= 0;
         }
     }
 }

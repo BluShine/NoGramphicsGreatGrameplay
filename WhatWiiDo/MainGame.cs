@@ -22,12 +22,11 @@ namespace WhatWiiDo
             Load();
 
             List<Minigame> gameList = new List<Minigame>();
-            //gameList.Add(new SodaGame());
+            gameList.Add(new SodaGame());
             gameList.Add(new Maze(players));
 
             currentGame = gameList[0];
 
-            float frameMilis = 1000f / FPS;
             int elapsedMilis = 1;
 
             while (running)
