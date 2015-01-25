@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WiimoteLib;
 using System.Media;
+using IrrKlang;
 
 namespace WhatWiiDo
 {
@@ -22,12 +23,15 @@ namespace WhatWiiDo
             Load();
 
             List<Minigame> gameList = new List<Minigame>();
+            gameList.Add(new PingPongGame(players));
             gameList.Add(new SodaGame(players));
             gameList.Add(new Maze(players));
 
             currentGame = gameList[0];
 
             int elapsedMilis = 1;
+
+            ISoundEngine soundEngine = new ISoundEngine();
 
             while (running)
             {
@@ -39,10 +43,12 @@ namespace WhatWiiDo
                     gameList.Remove(currentGame);
                     if (gameList.Count > 0)
                     {
+                        soundEngine.Play2D("../../sounds/win.wav");
                         currentGame = gameList[0];
                     }
                     else
                     {
+                        soundEngine.Play2D("../../sounds/win.wav");
                         running = false;
                     }
                 }

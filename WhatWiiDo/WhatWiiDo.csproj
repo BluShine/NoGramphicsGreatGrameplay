@@ -71,6 +71,7 @@
     <Compile Include="MainGame.cs" />
     <Compile Include="Maze.cs" />
     <Compile Include="Minigame.cs" />
+    <Compile Include="PingPongGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -108,6 +109,11 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="sounds\pingPong\pong_bounce.wav" />
+    <Content Include="sounds\pingPong\pong_hit_1.wav" />
+    <Content Include="sounds\pingPong\pong_hit_2.wav" />
+    <Content Include="sounds\pingPong\pong_whoosh.wav" />
+    <Content Include="sounds\pingPong\pong_whoosh_miss.wav" />
     <Content Include="sounds\soda\soda_drop.wav" />
     <Content Include="sounds\soda\soda_fizz_long.wav" />
     <Content Include="sounds\soda\soda_fizz_short.wav" />
@@ -123,6 +129,8 @@
     <Content Include="sounds\soda\soda_shake.wav" />
     <Content Include="sounds\soda\soda_tab_1.wav" />
     <Content Include="sounds\soda\soda_tab_2.wav" />
+    <Content Include="sounds\lose.wav" />
+    <Content Include="sounds\win.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
