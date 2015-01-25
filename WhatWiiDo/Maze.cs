@@ -1,19 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using WhatWiiDo;
 using WiimoteLib;
+using System.Media;
 
 
-public class Maze
+public class Maze : Minigame
 {
 	int numPlayers;
 	int mazeSize;
 	MazeRoom[,] rooms;
+    Dictionary<Guid, Player> players;
 
-	public Maze(int nP)
+    static float[] spawnLocations = { 0, 0, 1, 1, 0, 1, 1, 0, .5f, .5f, 0, .5f, .5f, 0, 1, .5f, .5f, 1 };
+
+    public Maze(Dictionary<Guid, Wiimote> input)
 	{
-		numPlayers = nP;
+		numPlayers = input.Count;
 		mazeSize = numPlayers + 2;
 		rooms = new MazeRoom[mazeSize, mazeSize];
+        players = new Dictionary<Guid, Player>(numPlayers);
+        int i = 0;
+        foreach(Guid ident in input.Keys)
+        {
+            players.Add(ident, new Player(ident, (int)(spawnLocations[i]*(mazeSize-1)), (int)(spawnLocations[i+1]*(mazeSize-1))));
+            i += 2;
+        }
         buildMaze();
         printMaze();
         Console.ReadLine();
@@ -53,7 +65,7 @@ public class Maze
 				}
 			}
 			int dir = gen.Next(4);
-			while(blockedDir(x, y, dir))
+			while(blockedBuildDir(x, y, dir))
 			{
 				dir = gen.Next(4);
 			}
@@ -92,7 +104,7 @@ public class Maze
 		return left && up && right && down;
 	}
 
-	bool blockedDir(int x, int y, int dir)
+	bool blockedBuildDir(int x, int y, int dir)
 	{
 		switch (dir) {
 		case 0:
@@ -142,6 +154,133 @@ public class Maze
         }
     }
 
+    public void update(Dictionary<Guid, Wiimote> input)
+    {
+        foreach (Guid ident in input.Keys)
+        {
+            Player currPlayer = players[ident];
+            currPlayer.deltaT(1);
+            if(currPlayer.down()) continue;
+            Wiimote mote = input[ident];
+            bool[] moveDirs = new bool[4];
+            for(int i = 0; i < 4; i++)
+            {
+                moveDirs[i] = !blockedMoveDir(currPlayer.x, currPlayer.y, i);
+            }
+            if (mote.WiimoteState.AccelState.Values.X > 2)
+            {
+                if(!moveDirs[2])
+                {
+                    Console.WriteLine("Left Movement Blocked");
+                }
+                currPlayer.setDownTime(30);
+            }
+            else if (mote.WiimoteState.AccelState.Values.X < -2)
+            {
+                if (!moveDirs[0])
+                {
+                    Console.WriteLine("Right Movement Blocked");
+                }
+                currPlayer.setDownTime(30);
+            }
+            else if (mote.WiimoteState.AccelState.Values.Z > 2)
+            {
+                if (!moveDirs[1])
+                {
+                    Console.WriteLine("Backward Movement Blocked");
+                }
+                currPlayer.setDownTime(30);
+            }
+            else if (mote.WiimoteState.AccelState.Values.Z < -2)
+            {
+                if (!moveDirs[3])
+                {
+                    Console.WriteLine("Forward Movement Blocked");
+                }
+                currPlayer.setDownTime(30);
+            }
+
+            if(mote.WiimoteState.ButtonState.Right)
+            {
+                if(moveDirs[0])
+                    currPlayer.x += 1;
+                else
+                    Console.WriteLine("Ow!");
+                currPlayer.setDownTime(30);
+            }
+            else if(mote.WiimoteState.ButtonState.Up)
+            {
+                if(moveDirs[3])
+                    currPlayer.y -= 1;
+                else
+                    Console.WriteLine("Ow!");
+                currPlayer.setDownTime(30);
+            }
+            else if(mote.WiimoteState.ButtonState.Left)
+            {
+                if(moveDirs[2])
+                    currPlayer.x -= 1;
+                else
+                    Console.WriteLine("Ow!");
+                currPlayer.setDownTime(30);
+            }
+            else if(mote.WiimoteState.ButtonState.Down)
+            {
+                if(moveDirs[1])
+                    currPlayer.y += 1;
+                else
+                    Console.WriteLine("Ow!");
+                currPlayer.setDownTime(30);
+            }
+        }
+    }
+
+    public bool isOver()
+    {
+        if(playerConvergence())
+        {
+            Console.WriteLine("You Win!");
+            return true;
+        }
+        return false;
+    }
+
+    bool blockedMoveDir(int x, int y, int dir)
+    {
+        switch (dir)
+        {
+            case 0:
+                return (x + 1) >= mazeSize || rooms[x, y].rightWall;
+            case 1:
+                return (y + 1) >= mazeSize || rooms[x, y].botWall;
+            case 2:
+                return (x - 1) < 0 || rooms[x - 1, y].rightWall;
+            case 3:
+                return (y - 1) < 0 || rooms[x, y - 1].botWall;
+        }
+        return true;
+    }
+
+    bool playerConvergence()
+    {
+        bool res = true;
+        int allx = -1;
+        int ally = -1;
+        foreach(Player p in players.Values)
+        {
+            if (allx < 0)
+            {
+                allx = p.x;
+                ally = p.y;
+            }
+            else
+            {
+                res &= p.x == allx;
+                res &= p.y == ally;
+            }
+        }
+        return res;
+    }
 
 }
 
@@ -177,4 +316,37 @@ public class MazeRoom
 	{
 		botWall = false;
 	}
+}
+
+public class Player
+{
+    Guid attachedInput;
+    public int x;
+    public int y;
+    int facing;
+    int downTime;
+
+    public Player(Guid aI, int ix, int iy)
+    {
+        attachedInput = aI;
+        x = ix;
+        y = iy;
+        facing = 3;
+        downTime = 0;
+    }
+
+    public bool down()
+    {
+        return downTime > 0;
+    }
+
+    public void setDownTime(int ndt)
+    {
+        downTime = ndt;
+    }
+
+    public void deltaT(int dt)
+    {
+        downTime -= dt;
+    }
 }

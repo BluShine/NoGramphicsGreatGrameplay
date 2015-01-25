@@ -10,8 +10,8 @@ namespace WhatWiiDo
     {
         static void Main(string[] args)
         {
-            //MainGame game = new MainGame();
-            Maze maze = new Maze(8);
+            MainGame game = new MainGame();
+            //Maze maze = new Maze(2);
         }
     }
 }
