@@ -1,29 +1,43 @@
-using System;
-using System.Collections;
-using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using WiimoteLib;
 
 
 public class Maze
 {
 	int numPlayers;
 	int mazeSize;
-	MazeRoom[][] rooms;
+	MazeRoom[,] rooms;
 
-	Maze(int nP)
+	public Maze(int nP)
 	{
 		numPlayers = nP;
 		mazeSize = numPlayers + 2;
-		rooms = new MazeRoom[mazeSize][mazeSize];
+		rooms = new MazeRoom[mazeSize, mazeSize];
+        buildMaze();
+        printMaze();
+        Console.ReadLine();
 	}
 
 	void buildMaze() {
+
+        for(int i = 0; i < rooms.GetLength(0); i++)
+        {
+            for(int j = 0; j < rooms.GetLength(1); j++)
+            {
+                rooms[i,j] = new MazeRoom();
+            }
+        }
+
 		int x = 0;
 		int y = 0;
 		Stack<Point> path = new Stack<Point>();
+        Random gen = new Random();
 
 		while(true)
 		{
-			rooms[x][y].visit();
+			rooms[x,y].visit();
+            Console.WriteLine(x + ", " + y);
 			if(surrounded(x, y))
 			{
 				if(path.Count == 0)
@@ -33,33 +47,35 @@ public class Maze
 				else
 				{
 					Point bt = path.Pop();
-					x = bt.x;
-					y = bt.y;
+                    x = bt.X;
+					y = bt.Y;
 					continue;
 				}
 			}
-			Random gen = new Random();
-			int dir = gen.Next(0, 3);
+			int dir = gen.Next(4);
 			while(blockedDir(x, y, dir))
 			{
-				dir = gen.Next(0, 3);
+				dir = gen.Next(4);
 			}
-			path.Push(new Point(x, y));
+            Point here = new Point();
+            here.X = x;
+            here.Y = y;
+			path.Push(here);
 			switch (dir) {
 			case 0:
-				rooms[x][y].breakRightWall();
+				rooms[x,y].breakRightWall();
 				x += 1;
 				break;
 			case 1:
-				rooms[x][y].breakBotWall();
+				rooms[x,y].breakBotWall();
 				y += 1;
 				break;
 			case 2:
-				rooms[x-1][y].breakRightWall();
+				rooms[x-1,y].breakRightWall();
 				x -= 1;
 				break;
 			case 3:
-				rooms[x][y-1].breakBotWall();
+				rooms[x,y-1].breakBotWall();
 				y -= 1;
 				break;
 			}
@@ -69,10 +85,10 @@ public class Maze
 
 	bool surrounded(int x, int y)
 	{
-		bool left = (x-1) < 0 || rooms[x-1][y].beenVisited();
-		bool up = (y-1) < 0 || rooms[x][y-1].beenVisited();
-		bool right = (x+1) >= mazeSize || rooms[x+1][y].beenVisited();
-		bool down = (y+1) >= mazeSize || rooms[x][y+1].beenVisited();
+		bool left = (x-1) < 0 || rooms[x-1,y].beenVisited();
+		bool up = (y-1) < 0 || rooms[x,y-1].beenVisited();
+		bool right = (x+1) >= mazeSize || rooms[x+1,y].beenVisited();
+		bool down = (y+1) >= mazeSize || rooms[x,y+1].beenVisited();
 		return left && up && right && down;
 	}
 
@@ -80,31 +96,62 @@ public class Maze
 	{
 		switch (dir) {
 		case 0:
-			return (x + 1) >= mazeSize || rooms [x + 1] [y].beenVisited ();
-			break;
+			return (x+1) >= mazeSize || rooms[x+1,y].beenVisited();
 		case 1:
-			return (y + 1) >= mazeSize || rooms [x] [y + 1].beenVisited ();
-			break;
+			return (y+1) >= mazeSize || rooms[x,y+1].beenVisited();
 		case 2:
-			return (x - 1) < 0 || rooms [x - 1] [y].beenVisited ();
-			break;
+			return (x-1) < 0 || rooms[x-1,y].beenVisited();
 		case 3:
-			return (y - 1) < 0 || rooms [x] [y - 1].beenVisited ();
-			break;
+			return (y-1) < 0 || rooms[x,y-1].beenVisited();
 		}
 		return true;
 	}
+
+    void printMaze()
+    {
+        Console.Write("║");
+        for(int i = 0; i < rooms.GetLength(0); i++)
+        {
+            Console.Write("═══");
+        }
+        Console.Write("\n");
+        for(int i = 0; i < rooms.GetLength(0); i++)
+        {
+            Console.Write("║");
+            for(int j = 0; j < rooms.GetLength(1); j++)
+            {
+                if(rooms[j,i].rightWall)
+                    Console.Write("  ║");
+                else
+                    Console.Write("   ");
+            }
+            Console.Write("\n");
+            Console.Write("║");
+            for (int j = 0; j < rooms.GetLength(1); j++)
+            {
+                if (rooms[j,i].rightWall && rooms[j,i].botWall)
+                    Console.Write("══╝");
+                 else if(rooms[j,i].rightWall)
+                    Console.Write("  ║");
+                else if(rooms[j,i].botWall)
+                    Console.Write("═══");
+                else
+                    Console.Write("   ");
+            }
+            Console.Write("\n");
+        }
+    }
 
 
 }
 
 public class MazeRoom
 {
-	bool rightWall;
-	bool botWall;
+	public bool rightWall;
+	public bool botWall;
 	bool visited;
 
-	MazeRoom()
+	public MazeRoom()
 	{
 		visited = false;
 		rightWall = true;
