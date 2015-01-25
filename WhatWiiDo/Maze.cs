@@ -121,6 +121,15 @@ public class Maze : Minigame
 
     void printMaze()
     {
+        List<Point> playerLocs = new List<Point>(players.Count);
+        foreach(Player p in players.Values)
+        {
+            Point pl = new Point();
+            pl.X = p.x;
+            pl.Y = p.y;
+            playerLocs.Add(pl);
+        }
+
         Console.Write("║");
         for(int i = 0; i < rooms.GetLength(0); i++)
         {
@@ -132,10 +141,17 @@ public class Maze : Minigame
             Console.Write("║");
             for(int j = 0; j < rooms.GetLength(1); j++)
             {
-                if(rooms[j,i].rightWall)
-                    Console.Write("  ║");
+                Point ts = new Point();
+                ts.X = j;
+                ts.Y = i;
+                if (playerLocs.Contains(ts))
+                    Console.Write(playerLocs.IndexOf(ts));
                 else
-                    Console.Write("   ");
+                    Console.Write(" ");
+                if(rooms[j,i].rightWall)
+                    Console.Write(" ║");
+                else
+                    Console.Write("  ");
             }
             Console.Write("\n");
             Console.Write("║");
@@ -199,14 +215,14 @@ public class Maze : Minigame
                 }
                 currPlayer.setDownTime(30);
             }
-
+            bool moved = false;
             if(mote.WiimoteState.ButtonState.Right)
             {
                 if(moveDirs[0])
                     currPlayer.x += 1;
                 else
                     Console.WriteLine("Ow!");
-                currPlayer.setDownTime(30);
+                moved = true;
             }
             else if(mote.WiimoteState.ButtonState.Up)
             {
@@ -214,7 +230,7 @@ public class Maze : Minigame
                     currPlayer.y -= 1;
                 else
                     Console.WriteLine("Ow!");
-                currPlayer.setDownTime(30);
+                moved = true;
             }
             else if(mote.WiimoteState.ButtonState.Left)
             {
@@ -222,7 +238,7 @@ public class Maze : Minigame
                     currPlayer.x -= 1;
                 else
                     Console.WriteLine("Ow!");
-                currPlayer.setDownTime(30);
+                moved = true;
             }
             else if(mote.WiimoteState.ButtonState.Down)
             {
@@ -230,7 +246,13 @@ public class Maze : Minigame
                     currPlayer.y += 1;
                 else
                     Console.WriteLine("Ow!");
+                moved = true;
+            }
+
+            if(moved)
+            {
                 currPlayer.setDownTime(30);
+                printMaze();
             }
         }
     }
