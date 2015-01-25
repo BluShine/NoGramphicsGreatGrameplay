@@ -9,7 +9,7 @@ namespace WhatWiiDo
 {
     interface Minigame
     {
-        void update(Dictionary<Guid, Wiimote> players);
+        void update(Dictionary<Guid, Wiimote> players, int deltaTime);
 
         bool isOver();
     }
