@@ -13,6 +13,7 @@ namespace WhatWiiDo
         static int shakesNeeded = 10;
         int shakes = 0;
         bool lastShakeUp = true;
+        bool bPressed = false;
 
         SoundPlayer shakeSound;
         SoundPlayer openSound;
@@ -33,10 +34,26 @@ namespace WhatWiiDo
                 {
                     shakes++;
                     shakeSound.Play();
+                    lastShakeUp = true;
                 }
                 if (mote.WiimoteState.AccelState.Values.Y > 2 && lastShakeUp)
                 {
                     lastShakeUp = false;
+                }
+
+                if (mote.WiimoteState.ButtonState.B && !bPressed)
+                {
+                    bPressed = true;
+                    openSound.Play();
+                    if (shakes > shakesNeeded)
+                    {
+                        fizzSound.Play();
+                    }
+                    shakes = 0;
+                }
+                if (!mote.WiimoteState.ButtonState.B)
+                {
+                    bPressed = false;
                 }
             }
         }
@@ -45,8 +62,8 @@ namespace WhatWiiDo
         {
             if (shakes > shakesNeeded)
             {
-                Console.WriteLine("you win!");
-                return true;
+                Console.WriteLine("ready!");
+                return false;
             }
             return false;
         }
