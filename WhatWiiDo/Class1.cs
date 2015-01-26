@@ -9,13 +9,13 @@ using WiimoteLib;
 
 namespace WhatWiiDo
 {
-    public interface PausedInfo
+    public interface PauseCondition
     {
         bool update(int timeDelta);
         Object nextState();
     }
 
-    public class TimedPause : PausedInfo
+    public class TimedPause : PauseCondition
     {
         int targetPauseTime, elapsedPauseTime;
         Object returnObject;
@@ -39,7 +39,7 @@ namespace WhatWiiDo
 
     }
 
-    class SoundPause : PausedInfo
+    class SoundPause : PauseCondition
     {
         ISound sound;
         Object returnedObject;
@@ -61,12 +61,12 @@ namespace WhatWiiDo
 
     }
     
-    public class AndPause : PausedInfo
+    public class AndPause : PauseCondition
     {
-        PausedInfo p1, p2;
+        PauseCondition p1, p2;
         Object returnedObject;
        
-        public AndPause(PausedInfo p1, PausedInfo p2, Object finishedObject)
+        public AndPause(PauseCondition p1, PauseCondition p2, Object finishedObject)
         {
             this.p1 = p1;
             this.p2 = p2;
@@ -83,12 +83,12 @@ namespace WhatWiiDo
         }
     }
 
-    public class OrPause : PausedInfo
+    public class OrPause : PauseCondition
     {
-        PausedInfo p1, p2;
+        PauseCondition p1, p2;
         Object returnedObject;
 
-        public OrPause(PausedInfo p1, PausedInfo p2, Object finishedObject)
+        public OrPause(PauseCondition p1, PauseCondition p2, Object finishedObject)
         {
             this.p1 = p1;
             this.p2 = p2;
@@ -106,13 +106,13 @@ namespace WhatWiiDo
         }
     }
 
-    public class ThenPause : PausedInfo
+    public class ThenPause : PauseCondition
     {
-        PausedInfo p1, p2;
+        PauseCondition p1, p2;
         bool p1Done;
         Object returnedObject;
 
-        public ThenPause(PausedInfo p1, PausedInfo p2, Object finishedObject)
+        public ThenPause(PauseCondition p1, PauseCondition p2, Object finishedObject)
         {
             this.p1 = p1;
             this.p2 = p2;
@@ -142,13 +142,13 @@ namespace WhatWiiDo
         }
     }
 
-    public class VibrateDuringPause : PausedInfo
+    public class VibrateDuringPause : PauseCondition
     {
-        PausedInfo pause;
+        PauseCondition pause;
         IEnumerable<Wiimote> motes;
         bool done;
 
-        public VibrateDuringPause(Wiimote w, PausedInfo pause)
+        public VibrateDuringPause(Wiimote w, PauseCondition pause)
         {
             this.pause = pause;
             List<Wiimote> l = new List<Wiimote>(1);
@@ -158,7 +158,7 @@ namespace WhatWiiDo
             done = false;
         }
 
-        public VibrateDuringPause(IEnumerable<Wiimote> ws, PausedInfo pause)
+        public VibrateDuringPause(IEnumerable<Wiimote> ws, PauseCondition pause)
         {
             this.pause = pause;
             motes = ws;
@@ -188,9 +188,9 @@ namespace WhatWiiDo
         }
     }
 
-    public class SoundAndTimePause : PausedInfo
+    public class SoundAndTimePause : PauseCondition
     {
-        PausedInfo pause;
+        PauseCondition pause;
         public SoundAndTimePause(ISound sound, int time, Object next)
         {
             pause = new AndPause(new SoundPause(sound, null), new TimedPause(time, null), next);

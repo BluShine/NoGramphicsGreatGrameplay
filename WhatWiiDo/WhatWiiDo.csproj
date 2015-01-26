@@ -109,16 +109,16 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="sounds\button_input.wav" />
+    <Folder Include="sounds\common\" />
+    <Folder Include="sounds\simon\" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="sounds\pingPong\pong_bounce.wav" />
     <Content Include="sounds\pingPong\pong_hit_1.wav" />
     <Content Include="sounds\pingPong\pong_hit_2.wav" />
     <Content Include="sounds\pingPong\pong_whoosh.wav" />
     <Content Include="sounds\pingPong\pong_whoosh_miss.wav" />
-    <Content Include="sounds\seq_correct.wav" />
-    <Content Include="sounds\simon_fail.wav" />
     <Content Include="sounds\soda\soda_drop.wav" />
     <Content Include="sounds\soda\soda_fizz_long.wav" />
     <Content Include="sounds\soda\soda_fizz_short.wav" />

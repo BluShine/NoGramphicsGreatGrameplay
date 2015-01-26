@@ -20,7 +20,7 @@ namespace WhatWiiDo
         ISound currentlySpokenCommand, playingTone;
         int currentLevel, targetLevel, speakIndex, pause_time, pause_elapsedTime;
         wiiButton nextButton;
-        PausedInfo pauseInfo;
+        PauseCondition pauseInfo;
 
         public SimonGame(Dictionary<Guid, Wiimote> players)
         {
@@ -158,7 +158,7 @@ namespace WhatWiiDo
             private int commandIndex, wait_elapsedMilli;
             private ISound playingSound;
             buttonHandler buttons;
-            private PausedInfo pausedInfo;
+            private PauseCondition pausedInfo;
 
             public static void initCommandList(int listSize){
                 commandList = new List<wiiButton>(listSize);
