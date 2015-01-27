@@ -14,6 +14,7 @@ namespace WhatWiiDo
         Dictionary<Guid, Wiimote> players;
         WiimoteCollection wiimoteCollection;
         Boolean running = true;
+        WiimoteEmulator emulatedWiimote;
         static float FPS = 100;
 
         Minigame currentGame;
@@ -23,8 +24,8 @@ namespace WhatWiiDo
             Load();
 
             List<Minigame> gameList = new List<Minigame>();
-            gameList.Add(new SodaGame(players));
-            gameList.Add(new PingPongGame(players));
+            //gameList.Add(new SodaGame(players));
+            //gameList.Add(new PingPongGame(players));
             gameList.Add(new Maze(players));
 
             currentGame = gameList[0];
@@ -36,6 +37,11 @@ namespace WhatWiiDo
             while (running)
             {
                 DateTime last = DateTime.Now;
+
+                if(emulatedWiimote != null)
+                {
+                    emulatedWiimote.updateRemoteState();
+                }
 
                 currentGame.update(players, elapsedMilis);
                 if (currentGame.isOver())
@@ -66,6 +72,8 @@ namespace WhatWiiDo
             players = new Dictionary<Guid, Wiimote>();
             int index = 1;
 
+            
+
             try
             {
                 wiimoteCollection.FindAllWiimotes();
@@ -81,6 +89,12 @@ namespace WhatWiiDo
 			catch(Exception ex)
 			{
                 Console.WriteLine("Unknown error" + ex.Message);
+            }
+
+            if(wiimoteCollection.Count == 0)
+            {
+                emulatedWiimote = new WiimoteEmulator();
+                wiimoteCollection.Add(emulatedWiimote);
             }
 
             foreach(Wiimote mote in wiimoteCollection) {
