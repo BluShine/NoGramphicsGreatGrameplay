@@ -16,7 +16,7 @@ namespace WhatWiiDo
 
         ISoundEngine soundEngine;
 
-        public SodaGame(Dictionary<Guid, Wiimote> players)
+        public SodaGame(Dictionary<Guid, iController> players)
         {
             soundEngine = new ISoundEngine();
 
@@ -27,7 +27,7 @@ namespace WhatWiiDo
             }
         }
 
-        public void update(Dictionary<Guid, Wiimote> players, int deltaTime)
+        public void update(Dictionary<Guid, iController> players, int deltaTime)
         {
             foreach (Guid id in players.Keys)
             {
@@ -71,7 +71,7 @@ namespace WhatWiiDo
                 random = new Random();
             }
 
-            public void update(Wiimote mote, int deltaTime, ISoundEngine soundEngine)
+            public void update(iController mote, int deltaTime, ISoundEngine soundEngine)
             {
                 if (shakes == -1)
                 {

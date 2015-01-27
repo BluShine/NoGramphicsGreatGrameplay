@@ -34,7 +34,7 @@ namespace WhatWiiDo
             start, ping, pong, miss
         }
 
-        public PingPongGame(Dictionary<Guid, Wiimote> players)
+        public PingPongGame(Dictionary<Guid, iController> players)
         {
             soundEngine = new ISoundEngine();
             random = new Random();
@@ -47,7 +47,7 @@ namespace WhatWiiDo
             }
         }
 
-        public void update(Dictionary<Guid, Wiimote> players, int deltaTime)
+        public void update(Dictionary<Guid, iController> players, int deltaTime)
         {
 
             bool serve = false;
@@ -137,7 +137,7 @@ namespace WhatWiiDo
                 buttons = new buttonHandler();
             }
 
-            public bool update(Wiimote mote, int deltaTime, ISoundEngine soundEngine, bool hitItNow, bool serveNow) {
+            public bool update(iController mote, int deltaTime, ISoundEngine soundEngine, bool hitItNow, bool serveNow) {
                 List<List<wiiButton>> buttonUpdates = buttons.update(mote);
 
                 swingTimer -= deltaTime;

@@ -7,10 +7,8 @@ using WiimoteLib;
 
 namespace WhatWiiDo
 {
-    interface Minigame 
+    class WiimoteWrapper : Wiimote, iController
     {
-        void update(Dictionary<Guid, iController> players, int deltaTime);
-
-        bool isOver();
+        public WiimoteWrapper() { }
     }
 }

@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using System.Threading;
+using System.Threading.Tasks;
 using WiimoteLib;
 
 namespace WhatWiiDo
 {
-    class WiimoteEmulator : Wiimote
+    class KeyboardController : iController
     {
         private Guid id;
         private WiimoteState fakeState;
 
-        public WiimoteEmulator()
+        public KeyboardController()
         {
             id = Guid.NewGuid();
             fakeState = new WiimoteState();
@@ -21,9 +23,11 @@ namespace WhatWiiDo
 
         //public string HIDDevicePath { get; }
         public Guid ID { get { return id; } }
-        public WiimoteState WiimoteState { get { return fakeState; } }
+        public WiimoteState WiimoteState { get { updateRemoteState();  return fakeState; } }
 
         public event EventHandler<WiimoteChangedEventArgs> WiimoteChanged;
+
+        
 
         public void updateRemoteState()
         {
@@ -44,6 +48,8 @@ namespace WhatWiiDo
                 asvs.X = -2.5f;
             else
                 asvs.X = 0f;
+
+            fakeState.AccelState.Values = asvs;
 
             remoteChanged();
         }

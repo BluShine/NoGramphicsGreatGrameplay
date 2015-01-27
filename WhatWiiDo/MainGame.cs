@@ -11,10 +11,9 @@ namespace WhatWiiDo
 {
     class MainGame
     {
-        Dictionary<Guid, Wiimote> players;
+        Dictionary<Guid, iController> players;
         WiimoteCollection wiimoteCollection;
         Boolean running = true;
-        WiimoteEmulator emulatedWiimote;
         static float FPS = 100;
 
         Minigame currentGame;
@@ -37,11 +36,6 @@ namespace WhatWiiDo
             while (running)
             {
                 DateTime last = DateTime.Now;
-
-                if(emulatedWiimote != null)
-                {
-                    emulatedWiimote.updateRemoteState();
-                }
 
                 currentGame.update(players, elapsedMilis);
                 if (currentGame.isOver())
@@ -69,7 +63,7 @@ namespace WhatWiiDo
         private void Load()
         {
             wiimoteCollection = new WiimoteCollection();
-            players = new Dictionary<Guid, Wiimote>();
+            players = new Dictionary<Guid, iController>();
             int index = 1;
 
             
@@ -91,13 +85,17 @@ namespace WhatWiiDo
                 Console.WriteLine("Unknown error" + ex.Message);
             }
 
-            if(wiimoteCollection.Count == 0)
-            {
-                emulatedWiimote = new WiimoteEmulator();
-                wiimoteCollection.Add(emulatedWiimote);
-            }
+            foreach(Wiimote motey in wiimoteCollection) {
 
-            foreach(Wiimote mote in wiimoteCollection) {
+                WiimoteWrapper mote = new WiimoteWrapper();
+                try
+                {
+                    mote = (WiimoteWrapper)motey;
+                }
+                catch(Exception e)
+                {
+
+                }
 
                 //set callback function
                 mote.WiimoteChanged += moteChanged;
@@ -116,11 +114,15 @@ namespace WhatWiiDo
 
                 mote.SetLEDs(index++);
             }
+
+            KeyboardController k = new KeyboardController();
+            k.WiimoteChanged += moteChanged;
+            players.Add(k.ID, k);
         }
 
         void moteChanged(object sender, WiimoteChangedEventArgs args)
         {
-            Wiimote mote = (Wiimote) sender;
+            //iController mote = (iController) sender;
             //Console.WriteLine(mote.ID + " did a thing.");
         }
     }

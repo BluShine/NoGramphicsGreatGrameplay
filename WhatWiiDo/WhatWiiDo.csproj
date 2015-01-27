@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="buttonHandler.cs" />
+    <Compile Include="iController.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="Maze.cs" />
     <Compile Include="Minigame.cs" />
@@ -81,7 +82,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SodaGame.cs" />
-    <Compile Include="WiimoteEmulator.cs" />
+    <Compile Include="KeyboardController.cs" />
+    <Compile Include="WiimoteWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

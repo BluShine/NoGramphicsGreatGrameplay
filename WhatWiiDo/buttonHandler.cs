@@ -27,7 +27,7 @@ namespace WhatWiiDo
         }
 
         //returns two lists. First list has buttons just pressed, second list has buttons just released
-        public List<List<wiiButton>> update(Wiimote mote) {
+        public List<List<wiiButton>> update(iController mote) {
             List<wiiButton> pressed = new List<wiiButton>();
             List<wiiButton> released = new List<wiiButton>();
 

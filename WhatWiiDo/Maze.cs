@@ -19,7 +19,7 @@ public class Maze : Minigame
 
     static float[] spawnLocations = { 0, 0, 1, 1, 0, 1, 1, 0, .5f, .5f, 0, .5f, .5f, 0, 1, .5f, .5f, 1 };
 
-    public Maze(Dictionary<Guid, Wiimote> input)
+    public Maze(Dictionary<Guid, iController> input)
 	{
 		numPlayers = input.Count;
 		mazeSize = numPlayers + 2;
@@ -171,7 +171,7 @@ public class Maze : Minigame
         }
     }
 
-    public void update(Dictionary<Guid, Wiimote> input, int deltaTime)
+    public void update(Dictionary<Guid, iController> input, int deltaTime)
     {
         List<Point> playerLocs = getPlayerLocations();
 
@@ -183,7 +183,7 @@ public class Maze : Minigame
             currPlayer.deltaT(deltaTime);
             if(currPlayer.down()) continue;
             Point currPlayerLoc = currPlayer.getLocation();
-            Wiimote mote = input[ident];
+            iController mote = input[ident];
             mote.SetRumble(false);
             bool[] moveDirs = new bool[4];
             for(int i = 0; i < 4; i++)
