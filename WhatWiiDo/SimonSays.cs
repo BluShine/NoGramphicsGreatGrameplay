@@ -52,14 +52,14 @@ namespace WhatWiiDo
              */
             switch (gamestate) {
                 case SimonGameState.SELECT_NEW_COMMAND:
-                    System.Console.WriteLine("SELECT_NEW_COMMAND");
+                    //System.Console.WriteLine("SELECT_NEW_COMMAND");
                     nextButton = (wiiButton)simonValues.GetValue(random.Next(simonValues.Length));
                     commandList.Add(nextButton);
                     gamestate = SimonGameState.SPEAK_COMMAND;
                     speakIndex = 0;
                     break;
                 case SimonGameState.SPEAK_COMMAND:
-                    System.Console.WriteLine("SPEAK_COMMAND");
+                    //System.Console.WriteLine("SPEAK_COMMAND");
                     if (speakIndex < commandList.Count){
                         playingTone = soundEngine.Play2D(CommonSounds.buttonSounds[commandList[speakIndex]]);
                         gamestate = SimonGameState.WAIT_FOR_TONE;
@@ -83,7 +83,7 @@ namespace WhatWiiDo
                                                 SimonGameState.PLAYER_TURN);
                      break;
                 case SimonGameState.PLAYER_TURN:
-                    System.Console.WriteLine("PLAYER_TURN");
+                    //System.Console.WriteLine("PLAYER_TURN");
                     bool done = true;
                     foreach(Guid id in players.Keys){
                         if (!simonPlayers[id].isFinished()){
@@ -101,7 +101,7 @@ namespace WhatWiiDo
                     }
                     break;
                 case SimonGameState.PLAYER_FAILURE:
-                    System.Console.WriteLine("PLAYER_FAILURE");
+                    //System.Console.WriteLine("PLAYER_FAILURE");
                     playingTone = soundEngine.Play2D(simonSoundDirectory + "simon_fail.wav");
                     currentLevel = 0;
                     commandList = new List<wiiButton>(targetLevel);
@@ -113,7 +113,7 @@ namespace WhatWiiDo
                     pauseInfo = new SoundAndTimePause(playingTone, 500, SimonGameState.SELECT_NEW_COMMAND);
                     break;
                 case SimonGameState.PLAYER_SUCCESS:
-                    System.Console.WriteLine("PLAYER_SUCCESS");
+                    //System.Console.WriteLine("PLAYER_SUCCESS");
                     playingTone = soundEngine.Play2D(CommonSounds.Yes);
                     gamestate = SimonGameState.WAIT_FOR_TONE;
                     SimonGameState nextState;
@@ -129,7 +129,7 @@ namespace WhatWiiDo
                                              nextState);
                     break;
                 case SimonGameState.VICTORY:
-                    System.Console.WriteLine("Veectoriii");
+                    //System.Console.WriteLine("Veectoriii");
                     break;
                 case SimonGameState.WAIT_FOR_TONE:
                     if (pauseInfo.update(deltaTime))
@@ -149,6 +149,7 @@ namespace WhatWiiDo
 
 
         enum SimonGameState { SELECT_NEW_COMMAND, SPEAK_COMMAND, PLAYER_TURN_BEGIN, PLAYER_TURN, PLAYER_SUCCESS, PLAYER_FAILURE, WAIT_FOR_TONE, VICTORY};
+        
         class SimonPlayer
         {
             private static List<wiiButton> commandList;

@@ -25,6 +25,8 @@ namespace WhatWiiDo
         public MainGame()
         {
             Console.WriteLine("Connect wii remotes and press enter when ready.");
+            Console.WriteLine("Make sure that your bluetooth devices shows the right number of controllers connected.");
+            Console.WriteLine("They should be called RVL-CNT-01. You may have to manually 'remove' controllers that have become disconnected.");
             Console.ReadLine();
 
             Load();
@@ -48,9 +50,10 @@ namespace WhatWiiDo
         private void initGames()
         {
             gameList = new List<Minigame>();
-            gameList.Add(new SodaGame(players));
-            gameList.Add(new PingPongGame(players));
-            gameList.Add(new Maze(players));
+            //gameList.Add(new SodaGame(players));
+            //gameList.Add(new PingPongGame(players));
+            //gameList.Add(new Maze(players));
+            gameList.Add(new SimonGame(players));
 
             elapsedMilis = 1;
 
