@@ -15,6 +15,7 @@ public class Maze : Minigame
     bool winFlag;
 
     ISoundEngine soundEngine;
+    SoundManager claps;
 
     static float[] spawnLocations = { 0, 0, 1, 1, 0, 1, 1, 0, .5f, .5f, 0, .5f, .5f, 0, 1, .5f, .5f, 1 };
 
@@ -26,6 +27,8 @@ public class Maze : Minigame
         players = new Dictionary<Guid, Player>(numPlayers);
         winFlag = false;
         soundEngine = new ISoundEngine();
+        claps = new SoundManager();
+
         int i = 0;
         foreach(Guid ident in input.Keys)
         {
@@ -172,6 +175,8 @@ public class Maze : Minigame
     {
         List<Point> playerLocs = getPlayerLocations();
 
+        claps.update();
+
         foreach (Guid ident in input.Keys)
         {
             Player currPlayer = players[ident];
@@ -251,17 +256,16 @@ public class Maze : Minigame
                 {
                     if (hiFives == numPlayers - 1)
                     {
-                        soundEngine.Play2D("../../sounds/maze/enthusiastic_yes.wav");
+                        claps.addSound(soundEngine.Play2D("../../sounds/maze/enthusiastic_yes.wav"));
                         winFlag = true;
                     }
-                    while(hiFives > 0)
+                    while (hiFives > 0)
                     {
                         hiFives--;
-                        if(hiFives > 0)
-                            soundEngine.Play2D("../../sounds/maze/slap_2.wav");
+                        if (hiFives > 0)
+                            claps.addSound(soundEngine.Play2D("../../sounds/maze/slap_2.wav"));
                         else
-                            soundEngine.Play2D("../../sounds/maze/slap_1.wav");
-                        //System.Threading.Thread.Sleep(100);
+                            claps.addSound(soundEngine.Play2D("../../sounds/maze/slap_1.wav"));
                     }
                 }
                 else
@@ -338,9 +342,9 @@ public class Maze : Minigame
 
     public bool isOver()
     {
-        if (winFlag)
+        if (winFlag && claps.empty())
             Console.WriteLine("You Win!");
-        return winFlag;
+        return winFlag && claps.empty();
     }
 
     bool blockedMoveDir(int x, int y, int dir)
@@ -454,4 +458,46 @@ public class Player
         p.Y = y;
         return p;
     }
+}
+
+public class SoundManager
+{
+    ISound lastSoundPlayed;
+    public Stack<ISound> soundsToPlay;
+
+    public SoundManager()
+    {
+        soundsToPlay = new Stack<ISound>();
+    }
+
+    public void addSound(ISound s)
+    {
+        Console.WriteLine("Adding sound" + s.ToString());
+        if (lastSoundPlayed == null || lastSoundPlayed.Finished)
+        {
+            lastSoundPlayed = s;
+            lastSoundPlayed.Paused = false;
+        }
+        else
+        {
+            s.Paused = true;
+            soundsToPlay.Push(s);
+        }
+    }
+
+    public void update()
+    {
+        if((lastSoundPlayed == null || lastSoundPlayed.Finished) && soundsToPlay.Count > 0)
+        {
+            lastSoundPlayed = soundsToPlay.Pop();
+            lastSoundPlayed.Paused = false;
+            Console.WriteLine("Playing sound" + lastSoundPlayed.ToString());
+        }
+    }
+
+    public bool empty()
+    {
+        return lastSoundPlayed.Finished && soundsToPlay.Count == 0;
+    }
+
 }

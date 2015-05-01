@@ -70,6 +70,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="buttonHandler.cs" />
+    <Compile Include="Class1.cs" />
+    <Compile Include="CommonSounds.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="Maze.cs" />
     <Compile Include="Minigame.cs" />
@@ -81,6 +83,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SimonSays.cs" />
     <Compile Include="SodaGame.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -109,7 +112,10 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="sounds\common\" />
+    <Folder Include="sounds\simon\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="irrKlang.NET4.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

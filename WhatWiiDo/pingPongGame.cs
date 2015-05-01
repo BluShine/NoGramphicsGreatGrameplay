@@ -22,7 +22,7 @@ namespace WhatWiiDo
         static int GRACETIME = 200;
         static int MISSRUMBLE = 100;
 
-        static int VOLLEYNEEDEDPERPLAYER = 6;
+        static int VOLLEYNEEDEDPERPLAYER = 3;
 
         int volleys = 0;
         PongState state = PongState.start;
