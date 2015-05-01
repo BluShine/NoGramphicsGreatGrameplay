@@ -54,7 +54,7 @@ public class Maze : Minigame
 		while(true)
 		{
 			rooms[x,y].visit();
-            Console.WriteLine(x + ", " + y);
+            //Console.WriteLine(x + ", " + y);
 			if(surrounded(x, y))
 			{
 				if(path.Count == 0)
@@ -193,7 +193,7 @@ public class Maze : Minigame
             {
                 if(!moveDirs[2])
                 {
-                    Console.WriteLine("Left Movement Blocked");
+                    //Console.WriteLine("Left Movement Blocked");
                     wallHit = true;
                 }
                 tapped = true;
@@ -202,7 +202,7 @@ public class Maze : Minigame
             {
                 if (!moveDirs[0])
                 {
-                    Console.WriteLine("Right Movement Blocked");
+                    //Console.WriteLine("Right Movement Blocked");
                     wallHit = true;
                 }
                 tapped = true;
@@ -211,7 +211,7 @@ public class Maze : Minigame
             {
                 if (!moveDirs[1])
                 {
-                    Console.WriteLine("Backward Movement Blocked");
+                    //Console.WriteLine("Backward Movement Blocked");
                     wallHit = true;
                 }
                 tapped = true;
@@ -225,7 +225,7 @@ public class Maze : Minigame
                 }
                 else if (!moveDirs[3])
                 {
-                    Console.WriteLine("Forward Movement Blocked");
+                    //Console.WriteLine("Forward Movement Blocked");
                     wallHit = true;
                 }
                 tapped = true;

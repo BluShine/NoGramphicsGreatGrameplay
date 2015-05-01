@@ -13,51 +13,83 @@ namespace WhatWiiDo
     {
         Dictionary<Guid, Wiimote> players;
         WiimoteCollection wiimoteCollection;
-        Boolean running = true;
         static float FPS = 100;
 
         Minigame currentGame;
+        private List<Minigame> gameList;
+        ISoundEngine soundEngine;
+        int elapsedMilis;
+
+        bool gameRunning = false;
 
         public MainGame()
         {
+            Console.WriteLine("Connect wii remotes and press enter when ready.");
+            Console.ReadLine();
+
             Load();
 
-            List<Minigame> gameList = new List<Minigame>();
+            Console.WriteLine("You have " + players.Count + " wii remotes connected. Press enter to start.");
+            Console.ReadLine();
+
+            while (true)
+            {
+                if (gameRunning)
+                {
+                    run();
+                }
+                else
+                {
+                    initGames();
+                }
+            }
+        }
+
+        private void initGames()
+        {
+            gameList = new List<Minigame>();
             gameList.Add(new SodaGame(players));
             gameList.Add(new PingPongGame(players));
             gameList.Add(new Maze(players));
 
+            elapsedMilis = 1;
+
             currentGame = gameList[0];
 
-            int elapsedMilis = 1;
+            soundEngine = new ISoundEngine();
+            gameRunning = true;
+            Console.Clear();
+        }
 
-            ISoundEngine soundEngine = new ISoundEngine();
+        private void run()
+        {
+            DateTime last = DateTime.Now;
 
-            while (running)
+            currentGame.update(players, elapsedMilis);
+            if (currentGame.isOver())
             {
-                DateTime last = DateTime.Now;
-
-                currentGame.update(players, elapsedMilis);
-                if (currentGame.isOver())
+                gameList.Remove(currentGame);
+                if (gameList.Count > 0)
                 {
-                    gameList.Remove(currentGame);
-                    if (gameList.Count > 0)
-                    {
-                        soundEngine.Play2D("../../sounds/win.wav");
-                        currentGame = gameList[0];
-                    }
-                    else
-                    {
-                        soundEngine.Play2D("../../sounds/win.wav");
-                        running = false;
-                    }
+                    soundEngine.Play2D("../../sounds/win.wav");
+                    currentGame = gameList[0];
                 }
-
-                TimeSpan elapsed = DateTime.Now - last;
-                elapsedMilis = elapsed.Milliseconds;
+                else
+                {
+                    soundEngine.Play2D("../../sounds/win.wav");
+                    gameRunning = false;
+                }
             }
 
-            Console.ReadLine();
+            if (Console.KeyAvailable)
+            {
+                Console.ReadKey(true);
+                Console.WriteLine("RESET!");
+                gameRunning = false;
+            }
+
+            TimeSpan elapsed = DateTime.Now - last;
+            elapsedMilis = elapsed.Milliseconds;
         }
 
         private void Load()

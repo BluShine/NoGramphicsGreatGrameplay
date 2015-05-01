@@ -50,6 +50,9 @@
     <Win32Resource>
     </Win32Resource>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>WhatWiiDo.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="irrKlang.NET4">
       <HintPath>..\irrKlang.NET4.dll</HintPath>
@@ -108,6 +111,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="irrKlang.NET4.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="sounds\pingPong\pong_bounce.wav" />
     <Content Include="sounds\pingPong\pong_hit_1.wav" />
     <Content Include="sounds\pingPong\pong_hit_2.wav" />
@@ -130,6 +136,9 @@
     <Content Include="sounds\soda\soda_tab_2.wav" />
     <Content Include="sounds\lose.wav" />
     <Content Include="sounds\win.wav" />
+    <Content Include="WiimoteLib.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

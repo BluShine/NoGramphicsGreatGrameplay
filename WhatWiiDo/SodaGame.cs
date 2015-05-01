@@ -32,6 +32,7 @@ namespace WhatWiiDo
             foreach (Guid id in players.Keys)
             {
                 sodas[id].update(players[id], deltaTime, soundEngine);
+                players[id].SetRumble(false);
             }
         }
 
@@ -111,7 +112,34 @@ namespace WhatWiiDo
 
                     if (buttonList[0].Count > 0)
                     {
-                        soundEngine.Play2D(canSounds[random.Next(canSounds.Length)]);
+                        if (buttonList[0].Contains(wiiButton.A))
+                        {
+                            soundEngine.Play2D(canSounds[0]);
+                        }
+                        else if (buttonList[0].Contains(wiiButton.One))
+                        {
+                            soundEngine.Play2D(canSounds[1]);
+                        }
+                        else if (buttonList[0].Contains(wiiButton.Two))
+                        {
+                            soundEngine.Play2D(canSounds[2]);
+                        }
+                        else if (buttonList[0].Contains(wiiButton.Minus))
+                        {
+                            soundEngine.Play2D(canSounds[3]);
+                        }
+                        else if (buttonList[0].Contains(wiiButton.Plus))
+                        {
+                            soundEngine.Play2D(canSounds[4]);
+                        }
+                        else if (buttonList[0].Contains(wiiButton.Home))
+                        {
+                            soundEngine.Play2D(canSounds[5]);
+                        }
+                        else
+                        {
+                            soundEngine.Play2D(canSounds[random.Next(canSounds.Length)]);
+                        }
                     }
                 }
             }
